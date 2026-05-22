@@ -7,287 +7,399 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aaaakshat/cm-web-fonts@latest/fonts.css">
 <style>
   :root {
-    --paper: #ffffff;
-    --ink: #1a1a1a;
-    --rule: #1a1a1a;
-    --gray: #555;
-    --lightgray: #f0f0f0;
-    --violet-bg: #ede9fa;
-    --violet-line: #6446b4;
-    --serif: "Computer Modern Serif", Georgia, "Times New Roman", serif;
-    --typewriter: "Computer Modern Typewriter", "Courier New", monospace;
-    --sans: "Computer Modern Sans", sans-serif;
+    --bg: #0a0a0a;
+    --dot: #2a2a2a;
+    --surface: rgba(15,15,15,0.92);
+    --border: #2a2a2a;
+    --text: #e8e4dc;
+    --text-dim: #888;
+    --text-muted: #444;
+    --violet-bg: rgba(100,70,190,0.13);
+    --violet-border: #7050c0;
+    --gold: #c8a84b;
+    --mono: "Computer Modern Typewriter", "Courier New", monospace;
+    --serif: "Computer Modern Serif", Georgia, serif;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   html { scroll-behavior: smooth; }
 
   body {
-    background: #d9d9dd;
-    color: var(--ink);
-    font-family: var(--serif);
-    font-size: 12pt;
-    line-height: 1.55;
-    padding: 2rem 1rem;
+    background-color: var(--bg);
+    background-image: radial-gradient(circle, var(--dot) 1px, transparent 1px);
+    background-size: 22px 22px;
+    min-height: 100vh;
+    font-family: var(--mono);
+    color: var(--text);
     -webkit-font-smoothing: antialiased;
   }
 
-  .paper {
-    background: var(--paper);
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 4rem 4.5rem;
-    box-shadow: 0 2px 24px rgba(0,0,0,0.18);
-  }
-
-  /* ── RUNNING HEADER ── */
-  .running-head {
+  /* ── TOP BAR ── */
+  .topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    font-size: 9.5pt;
-    color: var(--ink);
-    padding-bottom: 4px;
-    border-bottom: 0.4pt solid var(--ink);
-    margin-bottom: 2.5rem;
+    padding: 0 2rem;
+    height: 52px;
+  }
+  .topbar-title {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .topbar-date {
+    font-size: 11px;
+    color: var(--text-muted);
   }
 
-  /* ── TITLE PAGE ── */
-  .titlepage {
-    text-align: center;
-    padding: 3rem 0 4rem;
-    border-bottom: 0.4pt solid var(--lightgray);
-    margin-bottom: 3rem;
+  /* ── CHAPTER NAV ── */
+  .chapnav {
+    position: fixed;
+    top: 52px; left: 0; right: 0;
+    z-index: 99;
+    background: rgba(10,10,10,0.97);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
   }
-  .tp-kicker {
-    font-size: 10pt;
-    letter-spacing: 0.12em;
+  .chapnav::-webkit-scrollbar { display: none; }
+  .chapbtn {
+    flex-shrink: 0;
+    padding: 0 1.25rem;
+    height: 42px;
+    background: none;
+    border: none;
+    border-right: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .chapbtn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .chapbtn.active {
+    color: var(--text);
+    border-bottom: 2px solid var(--violet-border);
+    background: rgba(100,70,190,0.07);
+  }
+  .chapbtn .num {
+    color: var(--violet-border);
+    font-size: 10px;
+  }
+
+  /* ── CONTENT ── */
+  .content {
+    padding-top: 110px;
+    padding-bottom: 6rem;
+  }
+
+  .chapter {
+    display: none;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    animation: fadeIn 0.3s ease;
+  }
+  .chapter.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* ── COVER PAGE ── */
+  .cover {
+    text-align: center;
+    padding: 4rem 0 3rem;
+  }
+  .cover-kicker {
+    font-size: 10px;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
+    color: var(--text-muted);
     margin-bottom: 2.5rem;
   }
-  .tp-title {
-    font-size: 32pt;
+  .cover-title {
+    font-family: var(--serif);
+    font-size: 42px;
     font-weight: 700;
     line-height: 1.1;
+    color: #fff;
     margin-bottom: 1rem;
   }
-  .tp-subtitle {
-    font-size: 15pt;
+  .cover-subtitle {
+    font-size: 13px;
+    color: var(--text-dim);
     margin-bottom: 0.5rem;
+    letter-spacing: 0.04em;
   }
-  .tp-year {
-    font-size: 13pt;
-    margin-bottom: 2.5rem;
-  }
-  .tp-rule {
-    width: 6cm;
-    height: 0.4pt;
-    background: var(--ink);
-    margin: 2rem auto 2rem;
-  }
-  .tp-date {
-    font-size: 10pt;
+  .cover-year {
+    font-size: 13px;
+    color: var(--text-muted);
     margin-bottom: 3rem;
   }
-  .tp-disclaimer {
-    border: 1pt solid var(--lightgray);
-    padding: 1rem 1.25rem;
-    font-size: 9.5pt;
-    line-height: 1.5;
+  .cover-rule {
+    width: 80px;
+    height: 1px;
+    background: var(--border);
+    margin: 2.5rem auto;
+  }
+  .cover-disclaimer {
+    border: 1px solid var(--border);
+    padding: 1.25rem 1.5rem;
+    font-size: 11px;
+    line-height: 1.65;
+    color: var(--text-muted);
     text-align: left;
-    color: var(--ink);
-    max-width: 90%;
+    max-width: 540px;
+    margin: 0 auto 3rem;
+  }
+  .cover-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 420px;
     margin: 0 auto;
   }
-
-  /* ── TOC ── */
-  .toc {
-    margin-bottom: 3.5rem;
-  }
-  .toc h2 {
-    font-size: 15pt;
-    font-weight: 700;
-    margin-bottom: 1rem;
-  }
-  .toc ol {
-    list-style: none;
-    padding: 0;
-    counter-reset: toc;
-  }
-  .toc li {
-    counter-increment: toc;
+  .cover-nav-btn {
     display: flex;
-    align-items: baseline;
-    margin-bottom: 0.4rem;
-    font-size: 11pt;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1.25rem;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
   }
-  .toc li::before {
-    content: counter(toc) ".";
-    width: 1.6em;
+  .cover-nav-btn:hover {
+    border-color: var(--violet-border);
+    color: var(--text);
+    background: var(--violet-bg);
+  }
+  .cover-nav-btn .n {
+    font-size: 10px;
+    color: var(--violet-border);
+    width: 16px;
     flex-shrink: 0;
   }
-  .toc a {
-    color: var(--ink);
-    text-decoration: none;
-    flex-grow: 1;
-  }
-  .toc a:hover { text-decoration: underline; }
-  .toc .dots {
-    flex-grow: 1;
-    border-bottom: 0.4pt dotted #aaa;
-    margin: 0 0.4em 0.2em;
-  }
 
-  /* ── SECTIONS ── */
-  .section { margin-top: 3rem; }
-  .section h2 {
-    font-size: 16pt;
-    font-weight: 700;
-    padding-bottom: 0.4rem;
-    border-bottom: 0.5pt solid var(--rule);
-    margin-bottom: 1.25rem;
+  /* ── TYPOGRAPHY ── */
+  .chap-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
   }
-  .section h2 .secnum { margin-right: 0.5em; }
+  .chap-num {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--violet-border);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .chap-title {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+  }
 
   h3 {
-    font-size: 12.5pt;
+    font-family: var(--mono);
+    font-size: 13px;
     font-weight: 700;
-    margin: 1.75rem 0 0.75rem;
+    color: #ddd;
+    margin: 2.5rem 0 0.75rem;
+    letter-spacing: 0.04em;
   }
   h4 {
-    font-size: 12pt;
-    font-style: italic;
-    font-weight: 400;
-    margin: 1.5rem 0 0.5rem;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--violet-border);
+    margin: 2rem 0 0.75rem;
   }
 
-  p { margin-bottom: 0.9rem; text-align: justify; hyphens: none; }
+  p {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
 
-  /* ── MDFRAMED BOXES (all light violet, like the LaTeX) ── */
+  /* ── BOXES ── */
   .box {
     background: var(--violet-bg);
-    border-left: 1.2pt solid var(--violet-line);
-    padding: 0.9rem 1.1rem;
-    margin: 1.1rem 0;
-    font-size: 11pt;
-    line-height: 1.5;
+    border-left: 2px solid var(--violet-border);
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #c8c0e8;
   }
-  .box .box-title {
+  .box .bt {
     font-weight: 700;
     display: block;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.4rem;
+    color: #d8d0f8;
+    font-size: 12px;
   }
-  .box ul, .box ol { margin: 0.4rem 0 0.2rem; }
 
   /* ── LISTS ── */
-  ul, ol { padding-left: 1.6em; margin: 0.6rem 0 0.9rem; }
-  li { margin-bottom: 0.3rem; }
+  ul, ol { padding-left: 1.5em; margin: 0.5rem 0 1rem; }
+  li { font-size: 12.5px; line-height: 1.75; margin-bottom: 0.3rem; color: var(--text); }
 
   /* ── TABLE ── */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1.25rem 0;
-    font-size: 10.5pt;
-  }
-  table thead tr { border-top: 0.8pt solid var(--ink); border-bottom: 0.5pt solid var(--ink); }
-  table tbody { border-bottom: 0.8pt solid var(--ink); }
-  th { text-align: left; padding: 0.5rem 0.6rem; font-weight: 700; }
-  td { padding: 0.45rem 0.6rem; vertical-align: top; }
-  td:first-child { font-weight: 700; white-space: nowrap; }
+  .table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  thead tr { border-top: 1px solid #555; border-bottom: 1px solid #333; }
+  tbody { border-bottom: 1px solid #555; }
+  th { padding: 0.6rem 0.75rem; font-weight: 700; color: #ccc; text-align: left; }
+  td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text); }
+  td:first-child { color: var(--text-dim); white-space: nowrap; }
 
-  /* ── QUOTE ── */
+  /* ── BLOCKQUOTE ── */
   blockquote {
-    margin: 1rem 1.5rem;
+    margin: 1.25rem 0 1.25rem 1rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--border);
+    font-size: 12px;
     font-style: italic;
-    font-size: 11pt;
+    color: var(--text-dim);
+    line-height: 1.7;
   }
-
-  /* ── FOOTER ── */
-  .doc-footer {
-    text-align: center;
-    margin-top: 4rem;
-    padding-top: 2rem;
-  }
-  .doc-footer .fr { width: 4cm; height: 0.4pt; background: var(--ink); margin: 0 auto 0.75rem; }
-  .doc-footer .fp { font-size: 10pt; }
 
   /* ── SOURCES ── */
-  .sources { columns: 2; column-gap: 2rem; font-size: 9.5pt; line-height: 1.45; margin-top: 1rem; }
-  .sources p { margin-bottom: 0.4rem; text-align: left; break-inside: avoid; }
-  .sources em { font-style: italic; }
+  .sources { columns: 2; column-gap: 2rem; margin-top: 1.25rem; }
+  .sources p { font-size: 11px; color: var(--text-dim); margin-bottom: 0.4rem; text-align: left; break-inside: avoid; }
+  .sources em { font-style: italic; color: var(--text-muted); }
 
-  mono, .mono { font-family: var(--typewriter); font-size: 0.92em; }
+  /* ── NAV FOOTER ── */
+  .chapfooter {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .navbtn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .navbtn:hover { border-color: var(--violet-border); color: var(--text); }
+  .navbtn:disabled { opacity: 0.2; cursor: default; }
 
-  @media (max-width: 640px) {
-    body { padding: 0.5rem; }
-    .paper { padding: 2rem 1.5rem; }
-    .tp-title { font-size: 24pt; }
+  @media (max-width: 600px) {
+    .chapter { padding: 2rem 1.25rem; }
+    .cover-title { font-size: 30px; }
     .sources { columns: 1; }
-    p { text-align: left; }
+    .topbar-date { display: none; }
   }
 </style>
 </head>
 <body>
-<div class="paper">
 
-  <div class="running-head">
-    <span>Global Economic Outlook 2026</span>
-    <span>Privates Research Dokument</span>
-  </div>
+<div class="topbar">
+  <span class="topbar-title">Global Economic Outlook</span>
+  <span class="topbar-date">Mai 2026</span>
+</div>
 
-  <!-- TITLE PAGE -->
-  <div class="titlepage">
-    <div class="tp-kicker">Persönliches Research Dokument</div>
-    <div class="tp-title">Global Economic Outlook</div>
-    <div class="tp-subtitle">Makrothesen, AI Infrastruktur und Investitionsideen</div>
-    <div class="tp-year">2026</div>
-    <div class="tp-rule"></div>
-    <div class="tp-date">Mai 2026</div>
-    <div class="tp-disclaimer">
-      Dieses Dokument ist ein persönliches Research und Strategiepapier. Es stellt keine Anlageberatung dar. Alle Einschätzungen sind subjektiv und basieren auf öffentlich verfügbaren Informationen sowie persönlicher Analyse. Quellen sind im Text und am Ende des Dokuments angegeben.
+<nav class="chapnav">
+  <button class="chapbtn active" onclick="show(0)"><span class="num">00</span> Übersicht</button>
+  <button class="chapbtn" onclick="show(1)"><span class="num">01</span> Kernthesen</button>
+  <button class="chapbtn" onclick="show(2)"><span class="num">02</span> Makro USA</button>
+  <button class="chapbtn" onclick="show(3)"><span class="num">03</span> Emerging Markets</button>
+  <button class="chapbtn" onclick="show(4)"><span class="num">04</span> AI Infrastruktur</button>
+  <button class="chapbtn" onclick="show(5)"><span class="num">05</span> Investment Thesen</button>
+  <button class="chapbtn" onclick="show(6)"><span class="num">06</span> Widersprüche</button>
+  <button class="chapbtn" onclick="show(7)"><span class="num">07</span> Quellen</button>
+</nav>
+
+<div class="content">
+
+  <!-- COVER -->
+  <div class="chapter active" id="ch0">
+    <div class="cover">
+      <div class="cover-kicker">Persönliches Research Dokument</div>
+      <div class="cover-title">Global Economic Outlook</div>
+      <div class="cover-subtitle">Makrothesen, AI Infrastruktur und Investitionsideen</div>
+      <div class="cover-year">2026</div>
+      <div class="cover-rule"></div>
+      <div class="cover-disclaimer">
+        Dieses Dokument ist ein persönliches Research und Strategiepapier. Es stellt keine Anlageberatung dar. Alle Einschätzungen sind subjektiv und basieren auf öffentlich verfügbaren Informationen sowie persönlicher Analyse. Quellen sind im Text und am Ende des Dokuments angegeben.
+      </div>
+      <div class="cover-nav">
+        <button class="cover-nav-btn" onclick="show(1)"><span class="n">01</span> Überblick und Kernthesen</button>
+        <button class="cover-nav-btn" onclick="show(2)"><span class="n">02</span> Makroökonomischer Kontext USA</button>
+        <button class="cover-nav-btn" onclick="show(3)"><span class="n">03</span> Emerging Markets Outlook</button>
+        <button class="cover-nav-btn" onclick="show(4)"><span class="n">04</span> AI Infrastruktur: Die Shovel Play These</button>
+        <button class="cover-nav-btn" onclick="show(5)"><span class="n">05</span> Investment Thesen</button>
+        <button class="cover-nav-btn" onclick="show(6)"><span class="n">06</span> Aufgelöste Widersprüche</button>
+        <button class="cover-nav-btn" onclick="show(7)"><span class="n">07</span> Quellen und Referenzen</button>
+      </div>
     </div>
   </div>
 
-  <!-- TOC -->
-  <div class="toc">
-    <h2>Inhalt</h2>
-    <ol>
-      <li><a href="#s1">Überblick und Kernthesen</a><span class="dots"></span></li>
-      <li><a href="#s2">Makroökonomischer Kontext USA</a><span class="dots"></span></li>
-      <li><a href="#s3">Emerging Markets Outlook</a><span class="dots"></span></li>
-      <li><a href="#s4">AI Infrastruktur: Die Shovel Play These</a><span class="dots"></span></li>
-      <li><a href="#s5">Investment Thesen</a><span class="dots"></span></li>
-      <li><a href="#s6">Aufgelöste Widersprüche</a><span class="dots"></span></li>
-      <li><a href="#s7">Quellen und Referenzen</a><span class="dots"></span></li>
-    </ol>
-  </div>
-
-  <!-- 1 -->
-  <div class="section" id="s1">
-    <h2><span class="secnum">1.</span>Überblick und Kernthesen</h2>
+  <!-- CH 1 -->
+  <div class="chapter" id="ch1">
+    <div class="chap-header">
+      <div class="chap-num">Kapitel 01</div>
+      <div class="chap-title">Überblick und Kernthesen</div>
+    </div>
     <p>Das makroökonomische Bild im Jahr 2026 ist geprägt von gleichzeitigen, teilweise gegensätzlichen Kräften: einem historisch grossen Infrastrukturaufbau im Bereich künstlicher Intelligenz, einem zunehmend unter Druck geratenden amerikanischen Konsumenten, einer Energiekrise in Schwellenländern und einer bedeutenden Transition an der Spitze der US Notenbank.</p>
     <p>Die Kernthese lässt sich in drei Ebenen aufteilen:</p>
 
     <div class="box">
-      <span class="box-title">Kurzfristig, 1 bis 2 Quartale</span>
+      <span class="bt">Kurzfristig, 1 bis 2 Quartale</span>
       Der US Konsument ist erschöpft. Q2 2026 dürfte schwach werden. Der Consumer Spending Einbruch ist gut dokumentiert und die Datenlage ist eindeutig.
     </div>
     <div class="box">
-      <span class="box-title">Mittelfristig, 6 bis 18 Monate</span>
+      <span class="bt">Mittelfristig, 6 bis 18 Monate</span>
       Schwellenländer stehen unter massivem Druck durch Energieabhängigkeit und Schuldenlast. Brasilien ist als Rohstoffexporteur auf der richtigen Seite dieses Schocks. Der Fed Wechsel zu Warsh schafft Unsicherheit und Opportunität.
     </div>
     <div class="box">
-      <span class="box-title">Langfristig, 2 bis 10 Jahre</span>
+      <span class="bt">Langfristig, 2 bis 10 Jahre</span>
       Der AI Infrastrukturausbau ist strukturell und unumkehrbar. Die eigentlichen Gewinner sind nicht die Modelle sondern die physischen Bottlenecks: Strom, Photonics, Chips, Kupfer. Historische Parallelen zu Eisenbahn und Telekom mahnen zur Vorsicht bei Bewertungen der Softwareschicht.
+    </div>
+
+    <div class="chapfooter">
+      <button class="navbtn" onclick="show(0)">← Übersicht</button>
+      <button class="navbtn" onclick="show(2)">Makro USA →</button>
     </div>
   </div>
 
-  <!-- 2 -->
-  <div class="section" id="s2">
-    <h2><span class="secnum">2.</span>Makroökonomischer Kontext USA</h2>
+  <!-- CH 2 -->
+  <div class="chapter" id="ch2">
+    <div class="chap-header">
+      <div class="chap-num">Kapitel 02</div>
+      <div class="chap-title">Makroökonomischer Kontext USA</div>
+    </div>
 
-    <h3>2.1&nbsp;&nbsp;Consumer Spending und der Q2 Cliff</h3>
+    <h3>2.1 Consumer Spending und der Q2 Cliff</h3>
     <p>Der amerikanische Konsument zeigt deutliche Ermüdungserscheinungen. Die Datenlage per Mai 2026 ist eindeutig: reales Einkommenswachstum ist auf 1,1 Prozent im Jahresvergleich gefallen, gegenüber 2,8 Prozent noch zwei Jahre zuvor (TD Economics, September 2025).</p>
     <p>Besonders besorgniserregend ist der sogenannte Q2 Cliff: Die Buy Now Pay Later Schulden aus der Weihnachtssaison 2025 reifen gleichzeitig mit einer Abwärtsrevision von rund 911.000 Jobs ab. Die University of Michigan Consumer Sentiment Studie verzeichnet einen der niedrigsten Werte seit 25 Jahren, vergleichbar mit dem Niveau während der Covid Pandemie und unter dem Niveau der grossen Rezession 2007 bis 2009.</p>
 
@@ -303,7 +415,7 @@
       <li>Schwächerer Arbeitsmarkt bei gleichzeitig gestiegener Arbeitslosenquote auf 4,6 Prozent</li>
     </ul>
 
-    <h3>2.2&nbsp;&nbsp;Die Fed Transition: Powell zu Warsh</h3>
+    <h3>2.2 Die Fed Transition: Powell zu Warsh</h3>
     <p>Am 15. Mai 2026 übernimmt Kevin Warsh das Amt des Fed Vorsitzenden von Jerome Powell. Warsh, ehemaliger Fed Gouverneur während der Finanzkrise 2008, gilt traditionell als hawkish. Jüngere Aussagen zeichnen jedoch ein nuancierteres Bild.</p>
     <p>In einem Artikel im Wall Street Journal von November 2025 argumentierte Warsh, dass AI die Produktivität so stark steigere, dass die USA schneller wachsen könne als andere Volkswirtschaften, ohne Inflation zu riskieren. Dieser Rahmen würde Zinssenkungen ohne Preisdruck erlauben.</p>
 
@@ -311,12 +423,10 @@
       Der Markt preist mit 65 bis 75 Prozent Wahrscheinlichkeit 2 bis 3 Zinssenkungen unter Warsh ein. Gleichzeitig warnte Warsh in den Senatsanhörungen im April 2026, dass die Fed im Bereich Balance Sheet keine schnellen Schritte machen wird. Der Schlüssel für Investoren: Die erste Warsh Periode dürfte markanter durch einen veränderten Kommunikationsstil als durch dramatische Politikwechsel sein.
     </div>
 
-    <p>Wichtig: Warsh will den Fed Einfluss auf fiskal und sozialpolitische Themen reduzieren. Für die Märkte bedeutet das weniger Interventionen aber auch weniger Sicherheitsnetz. Der private Credit Markt wird von Jamie Dimon explizit als Risikoquelle genannt.</p>
-    <blockquote>"We haven't had a credit recession in so long, so when we have one, it would be big." (CNBC, Mai 2026)</blockquote>
+    <blockquote>"We haven't had a credit recession in so long, so when we have one, it would be big." — Jamie Dimon, CNBC, Mai 2026</blockquote>
 
-    <h3>2.3&nbsp;&nbsp;Private Credit Bubble und AI Bubble</h3>
+    <h3>2.3 Private Credit Bubble und AI Bubble</h3>
     <p>Der Aufbau von AI Infrastruktur erzeugt einen Kapitalzyklus der historische Parallelen hat. Die grossen Cloud Unternehmen investieren 2026 kollektiv rund 674 Milliarden Dollar in Capex. Goldman Sachs schätzt, dass AI Investitionen 40 Prozent des S&amp;P 500 Gewinnwachstums 2026 ausmachen.</p>
-    <p>Historische Parallelen mahnen zur Vorsicht:</p>
     <ul>
       <li>Eisenbahnen (USA, 19. Jahrhundert): Massive Überinvestition, mehrere Crashs, Infrastruktur überlebte 100 Jahre</li>
       <li>Telecom (USA, 1990er): Glasfaser Überinvestition, Dot Com Crash, Infrastruktur überlebte 30 Jahre</li>
@@ -324,94 +434,103 @@
     </ul>
 
     <div class="box">
-      Coatue Management identifiziert zwei Szenarien: AI Abundance (Wahrscheinlichkeit über 66 Prozent) und AI Reckoning (unter 33 Prozent). Das "infinite money glitch" Modell, also der Kreislauf aus OpenAI, Nvidia, Oracle und AMD, ist nur nachhaltig wenn der ROI kontinuierlich steigt. Das ist noch nicht bewiesen. (Coatue Report, November 2025).
+      Coatue Management identifiziert zwei Szenarien: AI Abundance (Wahrscheinlichkeit über 66 Prozent) und AI Reckoning (unter 33 Prozent). Das "infinite money glitch" Modell ist nur nachhaltig wenn der ROI kontinuierlich steigt. Das ist noch nicht bewiesen. (Coatue Report, November 2025).
+    </div>
+
+    <div class="chapfooter">
+      <button class="navbtn" onclick="show(1)">← Kernthesen</button>
+      <button class="navbtn" onclick="show(3)">Emerging Markets →</button>
     </div>
   </div>
 
-  <!-- 3 -->
-  <div class="section" id="s3">
-    <h2><span class="secnum">3.</span>Emerging Markets Outlook</h2>
+  <!-- CH 3 -->
+  <div class="chapter" id="ch3">
+    <div class="chap-header">
+      <div class="chap-num">Kapitel 03</div>
+      <div class="chap-title">Emerging Markets Outlook</div>
+    </div>
 
-    <h3>3.1&nbsp;&nbsp;Energieabhängigkeit als systemisches Risiko</h3>
+    <h3>3.1 Energieabhängigkeit als systemisches Risiko</h3>
     <p>Die Schliessung der Strasse von Hormuz im März 2026 infolge des Iran Konflikts hat die Energievulnerabilität von Schwellenländern in einer Weise exponiert die kein theoretisches Szenario mehr ist.</p>
     <p>QatarEnergy erklärte Force Majeure in Ras Laffan. Pakistan, Bangladesch und Sri Lanka befanden sich in akuten Energienotlagen, weniger als sieben Wochen nachdem neue Lieferverträge in Kraft getreten waren.</p>
 
     <div class="box">
-      <span class="box-title">Besonders kritische Länder</span>
+      <span class="bt">Besonders kritische Länder</span>
       <ul>
-        <li><strong>Sri Lanka:</strong> Rund 50 Prozent der gesamten Staatsausgaben gehen 2026 allein für Zinszahlungen auf. Offizieller Default im Jahr 2022 war historisch für den asiatisch pazifischen Raum.</li>
-        <li><strong>Pakistan:</strong> Kam 2022 innert Wochen an den Rand eines Sovereign Default. Staatseinnahmen gehen zu 40 Prozent für Zinsen auf.</li>
+        <li><strong>Sri Lanka:</strong> Rund 50 Prozent der gesamten Staatsausgaben gehen 2026 allein für Zinszahlungen auf.</li>
+        <li><strong>Pakistan:</strong> Staatseinnahmen gehen zu 40 Prozent für Zinsen auf.</li>
         <li><strong>Bangladesch:</strong> Staatseinnahmen unter 10 Prozent des BIP, einer der tiefsten Werte weltweit.</li>
       </ul>
       Zusätzlich auf dem Radar: Ägypten mit einer Schuldenquote von 95 Prozent des BIP und rund 100 Milliarden Dollar an Hartwährungsschulden in den nächsten fünf Jahren.
     </div>
 
-    <h3>3.2&nbsp;&nbsp;Der Domino Effekt und die 2008 Parallele</h3>
+    <h3>3.2 Der Domino Effekt und die 2008 Parallele</h3>
     <p>Das Szenario ähnelt in seiner systemischen Logik der Finanzkrise 2008, jedoch mit einem anderen Auslöser. Damals war es ein endogener Schock durch den Immobilienmarkt. Heute ist es eine Kombination aus gestiegenen Zinsen, Dollarstärke, Energiepreisschock und struktureller Schuldenschwäche.</p>
     <p>Entscheidend ist, dass die betroffenen Länder nicht einzeln betrachtet werden dürfen. Ein Default in einem Frontier Market löst Kapitalflucht aus anderen aus, erhöht Spreads global und trifft Länder die eigentlich noch solvent sind.</p>
 
-    <h3>3.3&nbsp;&nbsp;Brasilien als Gegenpol</h3>
+    <h3>3.3 Brasilien als Gegenpol</h3>
     <p>Brasilien steht auf der strukturell richtigen Seite des beschriebenen Schocks. Als Exporteur von Energie, Agrargütern, Eisenerz und Kupfer profitiert das Land von genau den Preissteigerungen die andere Schwellenländer in die Krise treiben.</p>
-    <p>Drei Pfeiler der Brasilien These:</p>
     <ol>
       <li><strong>Rohstoff Superzyklus:</strong> Kupfer, Eisenerz, Soja, Zucker und Öl (Petrobras) bilden die Basis der brasilianischen Exportwirtschaft.</li>
-      <li><strong>Schwacher Dollar:</strong> Brasilianische Assets profitieren überproportional von einem schwächeren Dollar, da Rohstoffe in Dollar gehandelt werden und Brasilien Nettoexporteur ist.</li>
-      <li><strong>Zinssenkungen:</strong> Eine dovishere Warsh Fed belebt Finanzierungsströme in Richtung EM zurück, sobald der akute Risk off abklingt.</li>
+      <li><strong>Schwacher Dollar:</strong> Brasilianische Assets profitieren überproportional von einem schwächeren Dollar.</li>
+      <li><strong>Zinssenkungen:</strong> Eine dovishere Warsh Fed belebt Finanzierungsströme in Richtung EM zurück.</li>
     </ol>
 
     <div class="box">
-      <span class="box-title">EWZ, iShares MSCI Brazil ETF</span>
-      EWZ ist das effizienteste Instrument für diese These. Ein einziges Instrument gibt Exposure auf Petrobras, Vale, Itaú, Embraer und den gesamten brasilianischen Markt. Der optimale Einstiegszeitpunkt liegt im EM Stress, nicht davor: Der EM Kollaps ist der Kaufpunkt für Brazil, kein Verkaufssignal.
+      <span class="bt">EWZ, iShares MSCI Brazil ETF</span>
+      EWZ ist das effizienteste Instrument für diese These. Ein einziges Instrument gibt Exposure auf Petrobras, Vale, Itaú, Embraer und den gesamten brasilianischen Markt. Der EM Kollaps ist der Kaufpunkt für Brazil, kein Verkaufssignal.
+    </div>
+
+    <div class="chapfooter">
+      <button class="navbtn" onclick="show(2)">← Makro USA</button>
+      <button class="navbtn" onclick="show(4)">AI Infrastruktur →</button>
     </div>
   </div>
 
-  <!-- 4 -->
-  <div class="section" id="s4">
-    <h2><span class="secnum">4.</span>AI Infrastruktur: Die Shovel Play These</h2>
+  <!-- CH 4 -->
+  <div class="chapter" id="ch4">
+    <div class="chap-header">
+      <div class="chap-num">Kapitel 04</div>
+      <div class="chap-title">AI Infrastruktur: Die Shovel Play These</div>
+    </div>
 
-    <h3>4.1&nbsp;&nbsp;Das 5 Layer Framework</h3>
-    <p>Der AI Infrastrukturstack lässt sich in fünf Schichten gliedern. Die Investment These konzentriert sich bewusst auf die unteren Schichten (Layer 0 bis 2), da dort die physischen Bottlenecks sitzen und die Bewertungen weniger extrem sind als in der Softwareschicht.</p>
+    <h3>4.1 Das 5 Layer Framework</h3>
+    <p>Der AI Infrastrukturstack lässt sich in fünf Schichten gliedern. Die Investment These konzentriert sich auf die unteren Schichten (Layer 0 bis 2), da dort die physischen Bottlenecks sitzen und die Bewertungen weniger extrem sind.</p>
 
-    <table>
-      <thead>
-        <tr><th>Layer</th><th>Beschreibung</th><th>Relevante Namen</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>0 Rohstoffe</td><td>Was alles braucht</td><td>Kupfer (FCX, Southern Copper), Weizen, Dünger</td></tr>
-        <tr><td>1 Energy</td><td>Strom zum Data Center</td><td>Bloom Energy, Eaton (ETN), ABB, Caterpillar</td></tr>
-        <tr><td>1.5 Photonics</td><td>Daten im Data Center</td><td>Lumentum (LITE), Coherent (COHR), Fabrinet (FN)</td></tr>
-        <tr><td>2 Compute</td><td>Chips und Produktion</td><td>ASML, TSMC, Micron</td></tr>
-        <tr><td>3 Software</td><td>Infrastruktur Software</td><td>Cooling/Vertiv, CoreWeave</td></tr>
-        <tr><td>4/5 Apps</td><td>Modelle und Applikationen</td><td>Short Kandidaten (Palantir)</td></tr>
-      </tbody>
-    </table>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Layer</th><th>Beschreibung</th><th>Relevante Namen</th></tr></thead>
+        <tbody>
+          <tr><td>0 Rohstoffe</td><td>Was alles braucht</td><td>Kupfer (FCX, Southern Copper), Weizen, Dünger</td></tr>
+          <tr><td>1 Energy</td><td>Strom zum Data Center</td><td>Bloom Energy, Eaton (ETN), ABB, Caterpillar</td></tr>
+          <tr><td>1.5 Photonics</td><td>Daten im Data Center</td><td>Lumentum (LITE), Coherent (COHR), Fabrinet (FN)</td></tr>
+          <tr><td>2 Compute</td><td>Chips und Produktion</td><td>ASML, TSMC, Micron</td></tr>
+          <tr><td>3 Software</td><td>Infrastruktur Software</td><td>Cooling/Vertiv, CoreWeave</td></tr>
+          <tr><td>4/5 Apps</td><td>Modelle und Applikationen</td><td>Short Kandidaten (Palantir)</td></tr>
+        </tbody>
+      </table>
+    </div>
 
-    <p>Das Framework stammt aus dem Coatue Investmentansatz (Coatue: "AI, The Coming Revolution", 2023) und wurde durch Marktentwicklungen 2025/2026 bestätigt.</p>
-
-    <h3>4.2&nbsp;&nbsp;Kupfer: Der unterschätzte Bottleneck</h3>
+    <h3>4.2 Kupfer: Der unterschätzte Bottleneck</h3>
     <p>Kupfer ist das leitfähigste und wichtigste Metall für den AI Aufbau. Es sitzt in Hochspannungsleitungen, Busbars, Kühlpumpen und der internen Verkabelung jedes Data Centers.</p>
-    <p>Die S&amp;P Global Studie "Copper in the Age of AI" (Januar 2026) identifiziert Kupfer als systemisches Risiko für die globale Technologieentwicklung:</p>
     <ul>
       <li>Kupfernachfrage soll bis 2040 auf 42 Millionen Tonnen steigen, ein Plus von 50 Prozent gegenüber heute</li>
       <li>Produktion soll 2030 bei 33 Millionen Tonnen peaked haben</li>
       <li>Resultierende Lücke: 10 Millionen Tonnen bis 2040</li>
       <li>Bereits 2026 dreht der Markt in ein Defizit von rund 150.000 Tonnen (ICSG, Oktober 2025)</li>
     </ul>
-    <p>Neue Kupferminen brauchen 20 bis 30 Jahre bis zur Produktion. Die Lösung dieses Engpasses ist strukturell und generationenübergreifend.</p>
 
     <div class="box">
-      <span class="box-title">Kupfer als Wirtschaftsindikator</span>
-      Solange die Kupfernachfrage hält, läuft die Wirtschaft. Ein Einbruch der Kupfernachfrage wäre eines der stärksten Rezessionssignale überhaupt. Dieser Einbruch ist aktuell nicht eingetreten, was auf anhaltende wirtschaftliche Expansion hinweist.
+      <span class="bt">Kupfer als Wirtschaftsindikator</span>
+      Solange die Kupfernachfrage hält, läuft die Wirtschaft. Ein Einbruch der Kupfernachfrage wäre eines der stärksten Rezessionssignale überhaupt. Dieser Einbruch ist aktuell nicht eingetreten.
     </div>
 
-    <p>Haupttreiber der Nachfrage neben AI: Elektrofahrzeuge brauchen 3 bis 4 mal mehr Kupfer als Verbrenner, Rüstungsausgaben steigen global, erneuerbare Energieinfrastruktur ist kupferintensiv.</p>
-
-    <h3>4.3&nbsp;&nbsp;Photonics: Die Copper Wall und ihre Lösung</h3>
-    <p>Innerhalb von Data Centers stösst klassische Kupferverkabelung an physikalische Grenzen: Bandbreite, Latenz und Wärmeentwicklung machen es bei heutigen GPU Cluster Grössen impraktikabel. Silicon Photonics, also Datenübertragung mit Licht statt Elektronen, ist die Antwort.</p>
-    <p>Nvidia hat diesen Trend mit einer 4 Milliarden Dollar Investition ratifiziert: je 2 Milliarden Dollar in Lumentum (LITE) und Coherent (COHR), beides strukturelle Kaufverpflichtungen plus Kapazitätsrechte für neue US Fabriken (Bloomberg, März 2026).</p>
+    <h3>4.3 Photonics: Die Copper Wall und ihre Lösung</h3>
+    <p>Innerhalb von Data Centers stösst klassische Kupferverkabelung an physikalische Grenzen. Silicon Photonics, also Datenübertragung mit Licht statt Elektronen, ist die Antwort.</p>
+    <p>Nvidia hat diesen Trend mit einer 4 Milliarden Dollar Investition ratifiziert: je 2 Milliarden Dollar in Lumentum (LITE) und Coherent (COHR) (Bloomberg, März 2026).</p>
 
     <div class="box">
-      <span class="box-title">Marktentwicklung Silicon Photonics</span>
+      <span class="bt">Marktentwicklung Silicon Photonics</span>
       <ul>
         <li>Optische Interconnects: 16 Milliarden Dollar (2024) zu 34 bis 41 Milliarden Dollar bis 2030</li>
         <li>Silicon Photonics: 3 Milliarden Dollar (2025) zu 12 bis 16 Milliarden Dollar bis 2032</li>
@@ -420,88 +539,84 @@
       </ul>
     </div>
 
-    <p>Wichtig: Photonics und Kupfer sind keine Konkurrenten. Kupfer bleibt für Strom und externe Infrastruktur. Photonics ersetzt Kupfer nur für Datenübertragung innerhalb des Data Centers. Beide Thesen laufen parallel und verstärken sich gegenseitig.</p>
+    <h3>4.4 ASML und die Chip Lieferkette</h3>
+    <p>ASML ist der einzige Hersteller von EUV Lithographiemaschinen weltweit. Ohne diese Maschinen gibt es keine Cutting Edge Chips. Das ist kein relativer Wettbewerbsvorteil, sondern ein absolutes Monopol. TSMC produziert praktisch alle relevanten AI Chips: Nvidia, AMD, Apple, Broadcom.</p>
 
-    <h3>4.4&nbsp;&nbsp;ASML und die Chip Lieferkette</h3>
-    <p>ASML ist der einzige Hersteller von EUV Lithographiemaschinen weltweit. Ohne diese Maschinen gibt es keine Cutting Edge Chips. Das ist kein relativer Wettbewerbsvorteil, sondern ein absolutes Monopol.</p>
-    <p>TSMC produziert praktisch alle relevanten AI Chips: Nvidia, AMD, Apple, Broadcom. Micron profitiert von einer fundamentalen Knappheit: OpenAI hat für das Stargate Projekt bis zu 900.000 DRAM Wafer pro Monat reserviert, was rund 40 Prozent des gesamten globalen DRAM Outputs entspricht.</p>
+    <h3>4.5 Power: Bloom Energy, Eaton, ABB, Caterpillar</h3>
+    <p>Der Strombedarf von AI Data Centers übersteigt das, was das bestehende Grid liefern kann. Bloom Energys Solid Oxide Brennstoffzellen ermöglichen modulare, rund um die Uhr verfügbare Grundlaststromproduktion ohne Netzabhängigkeit. Leopold Aschenbrenners Situational Awareness LP hält Bloom Energy als grösste Einzelposition.</p>
 
-    <h3>4.5&nbsp;&nbsp;Power: Bloom Energy, Eaton, ABB, Caterpillar</h3>
-    <p>Der Strombedarf von AI Data Centers übersteigt das, was das bestehende Grid liefern kann. Die Lösung ist Off Grid Produktion direkt beim Data Center. Bloom Energys Solid Oxide Brennstoffzellen ermöglichen genau das: modulare, rund um die Uhr verfügbare Grundlaststromproduktion ohne Netzabhängigkeit.</p>
-    <p>Leopold Aschenbrenners Situational Awareness LP, mit über 5,5 Milliarden Dollar US Equity Positionen, hält Bloom Energy als grösste Einzelposition. Die Kernthese: Die wertvollsten Assets im AI Zeitalter sind nicht Algorithmen, sondern Elektrizität und Rechenkapazität.</p>
+    <div class="chapfooter">
+      <button class="navbtn" onclick="show(3)">← Emerging Markets</button>
+      <button class="navbtn" onclick="show(5)">Investment Thesen →</button>
+    </div>
   </div>
 
-  <!-- 5 -->
-  <div class="section" id="s5">
-    <h2><span class="secnum">5.</span>Investment Thesen</h2>
-
-    <h3>5.1&nbsp;&nbsp;Long Positionen</h3>
-    <h4>AI Infrastruktur (Langfristig, Shovel Play Ansatz)</h4>
-
-    <div class="box">
-      <span class="box-title">Lumentum (LITE) und Coherent (COHR)</span>
-      Irreplaceable. Beide sind die dominanten Lieferanten für optische Komponenten in AI Data Centers. Nvidias 4 Milliarden Dollar Engagement ist ein starkes Qualitätssignal. Bewertungen haben sich nach dem massiven Run normalisiert. Dip Käufe erscheinen attraktiv.
-    </div>
-    <div class="box">
-      <span class="box-title">ASML</span>
-      Absolutes Monopol auf EUV Lithographie. Kein Cutting Edge Chip ohne ASML. Geopolitische Risiken (China Exportbeschränkungen) sind bekannt und eingepreist. Langfristig unverzichtbar.
-    </div>
-    <div class="box">
-      <span class="box-title">Freeport McMoRan (FCX)</span>
-      Grösster börsenkotierter Kupferproduzent weltweit. Direkter Pure Play auf die Kupfer Defizit These. Profitiert von steigenden Kupferpreisen durch AI, EVs und Rüstung.
-    </div>
-    <div class="box">
-      <span class="box-title">Eaton (ETN)</span>
-      Power Management für AI Data Centers. Wenig glamourös, strukturell gut positioniert. Profitiert direkt vom Data Center Capex Boom.
-    </div>
-    <div class="box">
-      <span class="box-title">Bloom Energy</span>
-      On site Stromerzeugung als Lösung für überlastete Grids. Aschenbrenners Kernposition. Nach dem massiven Run ist Bewertungsdisziplin wichtig, der strukturelle Trend bleibt intakt.
+  <!-- CH 5 -->
+  <div class="chapter" id="ch5">
+    <div class="chap-header">
+      <div class="chap-num">Kapitel 05</div>
+      <div class="chap-title">Investment Thesen</div>
     </div>
 
-    <h4>EWZ (Mittelfristig, Einstieg im EM Stress)</h4>
-    <div class="box">
-      <span class="box-title">iShares MSCI Brazil ETF (EWZ)</span>
-      Direktionaler Long auf Brasilien als Rohstoffgewinner im EM Stress Szenario. Drei Pfeiler: Rohstoff Superzyklus, schwacher Dollar, Zinssenkungen unter Warsh. Einstieg idealerweise im EM Risk off Moment wenn EWZ kurz mitgezogen wird, obwohl die Fundamentals stimmen. Der EM Kollaps ist der Kaufpunkt, nicht der Verkaufspunkt.
-    </div>
+    <h4>Long, AI Infrastruktur (Langfristig)</h4>
 
-    <h4>Goldman Sachs (Mittelfristig)</h4>
+    <div class="box"><span class="bt">Lumentum (LITE) und Coherent (COHR)</span>Irreplaceable. Beide sind die dominanten Lieferanten für optische Komponenten in AI Data Centers. Nvidias 4 Milliarden Dollar Engagement ist ein starkes Qualitätssignal. Dip Käufe erscheinen attraktiv.</div>
+    <div class="box"><span class="bt">ASML</span>Absolutes Monopol auf EUV Lithographie. Kein Cutting Edge Chip ohne ASML. Geopolitische Risiken sind bekannt und eingepreist. Langfristig unverzichtbar.</div>
+    <div class="box"><span class="bt">Freeport McMoRan (FCX)</span>Grösster börsenkotierter Kupferproduzent weltweit. Direkter Pure Play auf die Kupfer Defizit These. Profitiert von steigenden Kupferpreisen durch AI, EVs und Rüstung.</div>
+    <div class="box"><span class="bt">Eaton (ETN)</span>Power Management für AI Data Centers. Wenig glamourös, strukturell gut positioniert. Profitiert direkt vom Data Center Capex Boom.</div>
+    <div class="box"><span class="bt">Bloom Energy</span>On site Stromerzeugung als Lösung für überlastete Grids. Aschenbrenners Kernposition. Struktureller Trend bleibt intakt.</div>
+
+    <h4>Long, EWZ (Mittelfristig)</h4>
+    <div class="box"><span class="bt">iShares MSCI Brazil ETF (EWZ)</span>Direktionaler Long auf Brasilien als Rohstoffgewinner im EM Stress Szenario. Drei Pfeiler: Rohstoff Superzyklus, schwacher Dollar, Zinssenkungen unter Warsh. Der EM Kollaps ist der Kaufpunkt, nicht der Verkaufspunkt.</div>
+
+    <h4>Long, Goldman Sachs (Mittelfristig)</h4>
     <p>Zinssenkungen unter Warsh beleben M&amp;A Aktivität und IPO Markt. Goldman Sachs profitiert überproportional von steigender Kapitalmarktaktivität.</p>
 
-    <h3>5.2&nbsp;&nbsp;Short Positionen und Watchlist</h3>
-    <h4>Palantir (PLTR), Bewertungs Short</h4>
-    <div class="box">
-      <span class="box-title">Palantir (PLTR)</span>
-      Michael Burry hält seit Herbst 2025 Put Optionen mit einem Gesamtvolumen von rund 912 Millionen Dollar. Seine Einschätzung des fairen Werts: unter 50 Dollar pro Aktie. Aktuell: Trailing P/E von 224, Price to Sales von 76. Die Burry These ist nicht, dass AI nicht wächst, sondern dass Palantir kein skalierbares Softwareprodukt hat. Das Geschäftsmodell basiert auf Forward Deployed Engineers, was es strukturell einem Beratungsunternehmen mit niedrigen Margen ähnlicher macht als einem Softwareunternehmen. Dieser Short steht nicht im Widerspruch zur AI Infra Long These: Palantir ist Layer 4 bis 5, die Longs sitzen auf Layer 0 bis 2.
-    </div>
+    <h4>Short, Palantir (PLTR)</h4>
+    <div class="box"><span class="bt">Palantir (PLTR), Bewertungs Short</span>Michael Burry hält seit Herbst 2025 Put Optionen mit einem Gesamtvolumen von rund 912 Millionen Dollar. Fairer Wert laut Burry: unter 50 Dollar. Aktuell: Trailing P/E von 224, Price to Sales von 76. Das Geschäftsmodell ähnelt strukturell eher einem Beratungsunternehmen als einem Softwareunternehmen. Dieser Short steht nicht im Widerspruch zur AI Infra Long These: Palantir ist Layer 4 bis 5, die Longs sitzen auf Layer 0 bis 2.</div>
 
-    <h4>Öl Short (Watchlist, nicht aktiv)</h4>
-    <div class="box">
-      Strukturelle Thesis valide: China Nachfrage schwach, EM Kollaps reduziert Energienachfrage. Aber: Die Schliessung der Hormuz Strasse erzeugt einen massiven Supply Schock nach oben der die Short These aktuell konterkariert. Dieser Trade bleibt auf der Watchlist. Einstieg erst wenn ein klares Signal kommt: entweder Deeskalation im Iran Konflikt oder ein sichtbarer Demand Kollaps der den Supply Schock überwältigt.
+    <h4>Watchlist, Öl Short</h4>
+    <div class="box">Strukturelle Thesis valide: China Nachfrage schwach, EM Kollaps reduziert Energienachfrage. Aber: Die Schliessung der Hormuz Strasse erzeugt aktuell einen massiven Supply Schock nach oben. Einstieg erst bei Deeskalation oder sichtbarem Demand Kollaps.</div>
+
+    <div class="chapfooter">
+      <button class="navbtn" onclick="show(4)">← AI Infrastruktur</button>
+      <button class="navbtn" onclick="show(6)">Widersprüche →</button>
     </div>
   </div>
 
-  <!-- 6 -->
-  <div class="section" id="s6">
-    <h2><span class="secnum">6.</span>Aufgelöste Widersprüche</h2>
+  <!-- CH 6 -->
+  <div class="chapter" id="ch6">
+    <div class="chap-header">
+      <div class="chap-num">Kapitel 06</div>
+      <div class="chap-title">Aufgelöste Widersprüche</div>
+    </div>
+
     <p>Bei der Analyse dieser Thesen ergeben sich drei scheinbare Widersprüche, die einer expliziten Auflösung bedürfen.</p>
 
-    <h3>6.1&nbsp;&nbsp;Widerspruch 1: Öl Short vs. Hormuz Schliessung</h3>
+    <h3>Widerspruch 1: Öl Short vs. Hormuz Schliessung</h3>
     <p><strong>Scheinbarer Konflikt:</strong> Man kann nicht gleichzeitig auf fallende Ölpreise setzen und von einem Supply Schock durch die Schliessung der Hormuz Strasse ausgehen.</p>
-    <p><strong>Auflösung:</strong> Es ist kein logischer Widerspruch sondern ein Timing Problem. Kurzfristig dominiert der Supply Schock, der Ölpreis ist hoch. Mittelfristig, nach Deeskalation oder Öffnung von Hormuz, trifft die Nachfrageschwäche aus China und kollabierenden Schwellenländern auf wiederhergestelltes Angebot. Der Short ist dann richtig.</p>
+    <p><strong>Auflösung:</strong> Es ist kein logischer Widerspruch sondern ein Timing Problem. Kurzfristig dominiert der Supply Schock. Mittelfristig, nach Deeskalation, trifft die Nachfrageschwäche auf wiederhergestelltes Angebot. Der Short ist dann richtig.</p>
 
-    <h3>6.2&nbsp;&nbsp;Widerspruch 2: EWZ Long vs. EM Kollaps Outlook</h3>
+    <h3>Widerspruch 2: EWZ Long vs. EM Kollaps Outlook</h3>
     <p><strong>Scheinbarer Konflikt:</strong> Man kann nicht gleichzeitig auf einen Kollaps der Schwellenländer setzen und auf Brasilien long sein.</p>
-    <p><strong>Auflösung:</strong> Der EM Kollaps und der EWZ Long sind nicht gegensätzlich, sie stehen in einer kausalen Beziehung. Die Länder die kollabieren sind Energie Importeure. Brasilien ist Energie Exporteur. In der akuten Panikphase wird EWZ kurzfristig mitgezogen, weil grosse Fonds EM als Bucket verkaufen. Danach erholt sich Brasilien schneller und stärker.</p>
+    <p><strong>Auflösung:</strong> Die Länder die kollabieren sind Energie Importeure. Brasilien ist Energie Exporteur. In der akuten Panikphase wird EWZ kurzfristig mitgezogen, weil grosse Fonds EM als Bucket verkaufen. Danach erholt sich Brasilien schneller und stärker. Der EM Stress Moment ist der Einstiegspunkt, nicht das Verkaufssignal.</p>
 
-    <h3>6.3&nbsp;&nbsp;Widerspruch 3: Palantir Short vs. AI Infra Long</h3>
+    <h3>Widerspruch 3: Palantir Short vs. AI Infra Long</h3>
     <p><strong>Scheinbarer Konflikt:</strong> Man kann nicht gleichzeitig auf den AI Aufbau setzen und einen AI Wert shorten.</p>
-    <p><strong>Auflösung:</strong> Die zwei Positionen sitzen auf verschiedenen Ebenen des AI Stacks. Die Longs sind auf Layer 0 bis 2 (physische Infrastruktur). Der Palantir Short ist auf Layer 4 bis 5 (Software, Services). Wenn es zum Reckoning kommt, werden die Software und Service Layer zuerst und härter getroffen. Der Palantir Short ist im Kern ein Bewertungs und Geschäftsmodell Short, nicht ein AI Doom Short.</p>
+    <p><strong>Auflösung:</strong> Die zwei Positionen sitzen auf verschiedenen Ebenen des AI Stacks. Die Longs sind auf Layer 0 bis 2 (physische Infrastruktur). Der Palantir Short ist auf Layer 4 bis 5 (Software, Services). Wenn es zum Reckoning kommt, werden die Software und Service Layer zuerst getroffen. Der Palantir Short ist ein Bewertungs und Geschäftsmodell Short, kein AI Doom Short.</p>
+
+    <div class="chapfooter">
+      <button class="navbtn" onclick="show(5)">← Investment Thesen</button>
+      <button class="navbtn" onclick="show(7)">Quellen →</button>
+    </div>
   </div>
 
-  <!-- 7 -->
-  <div class="section" id="s7">
-    <h2><span class="secnum">7.</span>Quellen und Referenzen</h2>
+  <!-- CH 7 -->
+  <div class="chapter" id="ch7">
+    <div class="chap-header">
+      <div class="chap-num">Kapitel 07</div>
+      <div class="chap-title">Quellen und Referenzen</div>
+    </div>
     <p>Die folgenden Quellen flossen in die Analyse ein. Das Dokument erhebt keinen Anspruch auf akademische Vollständigkeit.</p>
     <div class="sources">
       <p>TD Economics: <em>U.S. Consumer Spending</em>, Sep. 2025</p>
@@ -523,13 +638,25 @@
       <p>Bloomberg: <em>Nvidia $4B Photonics Investment</em>, März 2026</p>
       <p>Yahoo Finance: <em>Burry Short on Palantir</em>, Apr./Mai 2026</p>
     </div>
-  </div>
 
-  <div class="doc-footer">
-    <div class="fr"></div>
-    <div class="fp">Privates Research Dokument &nbsp;&middot;&nbsp; Mai 2026</div>
+    <div class="chapfooter">
+      <button class="navbtn" onclick="show(6)">← Widersprüche</button>
+      <button class="navbtn" onclick="show(0)">↑ Übersicht</button>
+    </div>
   </div>
 
 </div>
+
+<script>
+  function show(n) {
+    document.querySelectorAll('.chapter').forEach((c, i) => {
+      c.classList.toggle('active', i === n);
+    });
+    document.querySelectorAll('.chapbtn').forEach((b, i) => {
+      b.classList.toggle('active', i === n);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
 </body>
 </html>
